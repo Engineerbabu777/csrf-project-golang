@@ -17,7 +17,11 @@ func main() {
 		log.Fatal(jwtErr)
 	}
 
-	
+	serverErr := server.StartServer(host, port)
 
+	if serverErr != nil {
+		log.Println("Error starting server:", serverErr)
+		log.Fatal(serverErr)
+	}
 
 }
