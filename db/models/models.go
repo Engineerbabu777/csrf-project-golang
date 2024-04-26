@@ -20,3 +20,8 @@ type TokenClaims struct {
 
 const RefreshTokenValidTime = time.Hour * 72
 const AuthTokenValidTime = time.Minute * 15
+
+
+func GenerateCSRFSecret()(string, error){
+	return randomstrings.GenerateRandomString(32);
+}
