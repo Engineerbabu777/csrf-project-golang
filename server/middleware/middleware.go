@@ -101,4 +101,13 @@ func setAuthAndRefreshCookies(w *http.ResponseWriter, authToken string, refreshT
 
 func grabCsrfFromReq(r *http.Request) string {
 
+	csrfFromReq := r.FormValue("X-CSRF-Token")
+
+	if csrfFromReq != "" {
+		return csrfFromReq
+	} else {
+		return r.Header.Get("X-CSRF-Token")
+
+	}
+
 }
