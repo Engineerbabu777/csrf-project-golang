@@ -77,6 +77,19 @@ func nullifyTokenCookies(w *http.ResponseWriter, r *http.Request) {
 		HttpOnly: true,
 	}
 	http.SetCookie(*w, &refreshCookie)
+
+	RefreshCookie, refreshErr := r.Cookie("RefreshToken")
+
+	if refreshErr == http.ErrNoCookie {
+		// do nothing!
+		return
+	} else if refreshErr != nil {
+		log.Panic("Panic: %+v", refreshErr)
+		http.Error(*w, http.StatusText(500), 500)
+	}
+
+	myJwt.RevokeRefreshToken(RefreshCookie.Value)
+
 }
 
 func setAuthAndRefreshCookies(w *http.ResponseWriter, authToken string, refreshTokenString string) {
