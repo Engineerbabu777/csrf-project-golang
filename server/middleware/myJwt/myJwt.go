@@ -1,6 +1,10 @@
-package myjwt;
+package myjwt
 
-import "github.com/golang-jwt/jwt"
+import (
+	"csrf-project/db/models"
+
+	"github.com/golang-jwt/jwt"
+)
 
 
 
@@ -36,7 +40,31 @@ func InitJWT()error{
 
 }
 
-func CreateNewTokens()(){
+func CreateNewTokens(uuid string, role string)(authTokenString,refreshToken string){
+
+   // generate the csrf secret!
+    csrfSecret, err := models.GenerateCSRFSecret();
+    if err!= nil {
+      return;
+    }
+
+    // generating the refresh token!
+    refreshToken, err = StringcreateRefreshTokenString(uuid,role,csrfSecret);
+
+    if err!= nil {
+      return;
+    }
+
+    // generating the auth token!
+    authTokenString, err = createAuthTokenString(uuid, role, csrfSecret);
+
+    if err!= nil {
+      return;
+    }
+
+    return;
+
+
 
 }
 
