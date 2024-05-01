@@ -128,21 +128,26 @@ func CheckAndRefreshTokens(oldAuthTokenString string, oldRefreshTokenString stri
 	err = errors.New("Unauthorized")
 	return
 }
-
-func createAuthTokenString(uuid string, role string, csrfSecret string) (authTokenString string, err error) {
-	authTokenExp := time.Now().Add(models.AuthTokenValidTime).Unix()
-	authClaims := models.TokenClaims{
-		jwt.StandardClaims{
-			Subject:   uuid,
-			ExpiresAt: authTokenExp,
-		},
-		role,
-		csrfSecret,
+func createRefreshTokenString(uuid string, role string, csrfString string) (refreshTokenString string, err error) {
+	refreshTokenExp := time.Now().Add(models.RefreshTokenValidTime).Unix()
+	refreshJti, err := db.StoreRefreshToken()
+	if err != nil {
+		return
 	}
 
-	authJwt := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), authClaims)
+	refreshClaims := models.TokenClaims{
+		jwt.StandardClaims{
+			Id:        refreshJti,
+			Subject:   uuid,
+			ExpiresAt: refreshTokenExp,
+		},
+		role,
+		csrfString,
+	}
 
-	authTokenString, err = authJwt.SignedString(signKey)
+	refreshJwt := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), refreshClaims)
+
+	refreshTokenString, err = refreshJwt.SignedString(signKey)
 	return
 }
 
