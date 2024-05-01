@@ -128,9 +128,24 @@ func CheckAndRefreshTokens(oldAuthTokenString string, oldRefreshTokenString stri
 	err = errors.New("Unauthorized")
 	return
 }
-func createAuthTokenString()(){
 
+func createAuthTokenString(uuid string, role string, csrfSecret string) (authTokenString string, err error) {
+	authTokenExp := time.Now().Add(models.AuthTokenValidTime).Unix()
+	authClaims := models.TokenClaims{
+		jwt.StandardClaims{
+			Subject:   uuid,
+			ExpiresAt: authTokenExp,
+		},
+		role,
+		csrfSecret,
+	}
+
+	authJwt := jwt.NewWithClaims(jwt.GetSigningMethod("RS256"), authClaims)
+
+	authTokenString, err = authJwt.SignedString(signKey)
+	return
 }
+
 
 
 func createRefreshTokenString()(){
