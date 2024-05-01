@@ -2,11 +2,13 @@ package myJwt
 
 import (
 	"crypto/rsa"
+	"csrf-project/db/models"
 	"errors"
-	jwt "github.com/dgrijalva/jwt-go"
 	"io/ioutil"
 	"log"
 	"time"
+
+	jwt "github.com/dgrijalva/jwt-go"
 )
 
 const (
